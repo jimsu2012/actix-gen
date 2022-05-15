@@ -1,0 +1,91 @@
+use crate::{
+    api::$1::$c1Error,
+    db::establish_connection,
+    model::$1::{New$c1, $c1},
+};
+use diesel::prelude::*;
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+pub struct Create$c1 {
+    pub msg: String,
+}
+
+impl From<Create$c1> for New$c1 {
+    fn from(item: Create$c1) -> New$c1 {
+        New$c1 { msg: item.msg }
+    }
+}
+
+#[derive(Deserialize)]
+pub struct Update$c1 {
+    pub from_id: i32,
+    pub msg: String,
+}
+
+impl From<Update$c1> for $c1 {
+    fn from(item: Update$c1) -> $c1 {
+        $c1 {
+            id: item.from_id,
+            msg: item.msg,
+        }
+    }
+}
+
+impl From<diesel::result::Error> for $c1Error {
+    fn from(item: diesel::result::Error) -> $c1Error {
+        match item {
+            diesel::result::Error::NotFound => $c1Error::$c1NotFound,
+            _ => $c1Error::Unknown(""),
+        }
+    }
+}
+
+pub fn create_$1($1_to_create: Create$c1) -> Result<usize, diesel::result::Error> {
+    use crate::schema::$2::dsl::*;
+
+    let connection = establish_connection();
+
+    let $1 = New$c1::from($1_to_create);
+
+    diesel::insert_into($2)
+        .values(&$1)
+        .execute(&connection)
+}
+
+pub fn read_$2() -> Result<Vec<$c1>, diesel::result::Error> {
+    use crate::schema::$2::dsl::*;
+
+    let connection = establish_connection();
+
+    $2.load::<$c1>(&connection)
+}
+
+pub fn read_$1(id_: i32) -> Result<$c1, diesel::result::Error> {
+    use crate::schema::$2::dsl::*;
+
+    let connection = establish_connection();
+
+    $2.filter(id.eq(id_)).first(&connection)
+}
+
+pub fn update_$1($1_to_update_to: Update$c1) -> Result<usize, diesel::result::Error> {
+    use crate::schema::$2::dsl::*;
+
+    let connection = establish_connection();
+
+    let from_id = $1_to_update_to.from_id;
+    let $1 = $c1::from($1_to_update_to);
+
+    diesel::update($2.find(from_id))
+        .set(&$1)
+        .execute(&connection)
+}
+
+pub fn destroy_$1($1_id: i32) -> Result<usize, diesel::result::Error> {
+    use crate::schema::$2::dsl::*;
+
+    let connection = establish_connection();
+
+    diesel::delete($2.find($1_id)).execute(&connection)
+}

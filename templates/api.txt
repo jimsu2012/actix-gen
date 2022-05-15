@@ -1,0 +1,125 @@
+use crate::{
+    model::$1::$c1,
+    ops::$1::{
+        create_$1, destroy_$1, read_$1, read_$2, update_$1, Create$c1,
+        Update$c1,
+    },
+};
+
+use actix_web::{
+    delete,
+    error::ResponseError,
+    get,
+    http::{header::ContentType, StatusCode},
+    post, put,
+    web::{self, Json, Path},
+    HttpResponse,
+};
+use serde::{Deserialize, Serialize};
+use strum::Display;
+
+#[derive(Deserialize, Serialize)]
+pub struct $c1Identifier {
+    $1_id: i32,
+}
+
+#[derive(Debug, Display)]
+pub enum $c1Error {
+    Unknown(&'static str),
+    Bad$c1Request,
+    $c1NotFound,
+}
+
+#[derive(Deserialize)]
+pub struct Update$c1ReqBody {
+    msg: String,
+}
+
+impl Update$c1 {
+    fn from(from_id: i32, item: Update$c1ReqBody) -> Update$c1 {
+        Update$c1 {
+            from_id: from_id,
+            msg: item.msg,
+        }
+    }
+}
+
+impl ResponseError for $c1Error {
+    fn error_response(&self) -> HttpResponse {
+        HttpResponse::build(self.status_code())
+            .insert_header(ContentType::json())
+            .body(self.to_string())
+    }
+
+    fn status_code(&self) -> StatusCode {
+        match self {
+            $c1Error::Bad$c1Request => StatusCode::BAD_REQUEST,
+            $c1Error::$c1NotFound => StatusCode::NOT_FOUND,
+            $c1Error::Unknown(_) => StatusCode::INTERNAL_SERVER_ERROR,
+        }
+    }
+}
+
+pub fn service() -> actix_web::Scope {
+    web::scope("/$2")
+        .service(post_$1)
+        .service(get_$2)
+        .service(get_$1)
+        .service(put_$1)
+        .service(delete_$1)
+}
+
+#[post("")]
+pub async fn post_$1($1: Json<Create$c1>) -> Result<String, $c1Error> {
+    match create_$1($1.into_inner()) {
+        Ok(count) => Ok(count.to_string()),
+        Err(x) => Err($c1Error::from(x)),
+    }
+}
+
+#[get("")]
+pub async fn get_$2() -> Result<Json<Vec<$c1>>, $c1Error> {
+    match read_$2() {
+        Ok($1es) => Ok(Json($1es)),
+        Err(x) => Err($c1Error::from(x)),
+    }
+}
+
+#[get("/{$1_id}")]
+pub async fn get_$1(
+    $1_identifer: Path<$c1Identifier>,
+) -> Result<Json<$c1>, $c1Error> {
+    let $1_id = $1_identifer.into_inner().$1_id;
+
+    let $1 = read_$1($1_id);
+
+    match $1 {
+        Ok($1) => Ok(Json($1)),
+        Err(x) => Err($c1Error::from(x)),
+    }
+}
+
+#[put("/{$1_id}")]
+pub async fn put_$1(
+    $1_identifer: Path<$c1Identifier>,
+    $1: Json<Update$c1ReqBody>,
+) -> Result<String, $c1Error> {
+    let $1_id = $1_identifer.into_inner().$1_id;
+
+    match update_$1(Update$c1::from($1_id, $1.into_inner())) {
+        Ok(count) => Ok(count.to_string()),
+        Err(x) => Err($c1Error::from(x)),
+    }
+}
+
+#[delete("/{$1_id}")]
+pub async fn delete_$1(
+    $1_identifer: Path<$c1Identifier>,
+) -> Result<String, $c1Error> {
+    let $1_id = $1_identifer.into_inner().$1_id;
+
+    match destroy_$1($1_id) {
+        Ok(count) => Ok(count.to_string()),
+        Err(x) => Err($c1Error::from(x)),
+    }
+}

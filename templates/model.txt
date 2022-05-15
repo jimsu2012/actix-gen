@@ -1,0 +1,17 @@
+use crate::schema::$2;
+
+use diesel::Insertable;
+use serde::{Deserialize, Serialize};
+
+#[derive(Insertable)]
+#[table_name = "$2"]
+pub struct New$c1 {
+    pub msg: String,
+}
+
+#[derive(Queryable, AsChangeset, Serialize, Deserialize)]
+#[table_name = "$2"]
+pub struct $c1 {
+    pub id: i32,
+    pub msg: String,
+}
